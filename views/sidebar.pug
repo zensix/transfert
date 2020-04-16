@@ -1,0 +1,28 @@
+// sidebar
+nav#sidebar
+    div.sidebar-header
+        h3 Sidebar
+    ul.list-unstyled.components
+        p Dummy header
+        li
+           a(href="/") Home
+        li
+           a(href="#") About
+        li
+            a.dropdown-toggle(href="#pageSubmenu", data-toggle="collapse", aria-expanded="false") Pages
+            ul#pageSubmenu.collapse.list-unstyled
+                li
+                    a(href="#") Page 1
+                li
+                    a(href="#") Page 2
+                li
+                    a(href="#") Page 3
+        li
+            a.dropdown-toggle(href="#TestSubmenu", data-toggle="collapse", aria-expanded="false") Tests
+            ul#TestSubmenu.collapse.list-unstyled
+                li
+                    a(href="/test") test1
+        li
+            a(href="#") Portfolio
+        li
+            a(href="#") Contacts 

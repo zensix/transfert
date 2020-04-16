@@ -1,0 +1,37 @@
+doctype html
+html
+  head
+    title= title
+
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css',integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4",crossorigin="anonymous")
+    // link(rel='stylesheet', href='/stylesheets/fontawesome/all.css')
+    //link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/app.css')
+    // Font Awesome
+    script(src='/javascripts/solid.js')
+    script(src='/javascripts/fontawesome.js')
+    //
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css")
+    
+    script(src='/socket.io/socket.io.js')
+    script.
+      var socket = io();
+      //define functions socket.emit sending to server (app.js) and socket.on receiving 
+      // 'new message' is for the id of the socket and $('#new-message') is for the button
+      // 'chat message' is for the id of the socket and $('#new-area') is for the text area
+  body
+    div.sticky-top#messages-area
+    div.wrapper
+        include sidebar
+        div#content
+          include menu
+          block content
+        div.overlay 
+    // jquery JS
+    
+    script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js')
+    // poppper JS
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js")
+    block localscript
