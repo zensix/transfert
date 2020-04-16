@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  form(method='POST' action='/signup')
+    div.form-group
+      label(for='username') Login:
+      input#username.form-control(type='text', placeholder='login', name='username' ,required)
+    div.form-group
+      label(for='password') Password:
+      input#password.form-control(type='password', placeholder='password' ,name='password' ,required)
+    div
+      input(type="submit", value="Register")
+
+
+block localscript
+   script(src='/javascripts/app.js')
