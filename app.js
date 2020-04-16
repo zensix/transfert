@@ -1,52 +1,74 @@
 var createError = require('http-errors');
 var express = require('express');
-var session = require('express-session');
-const FileStore = require('session-file-store')(session);
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const uuid = require('uuid/v4');
 
 var sockIO = require('socket.io')();
 
-// Routes
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var socketIORouter = require('./routes/socketio') 
+// MongoDB
+const mongoose = require('mongoose')
+
+var mongoConnectString=process.env.MONGO_CONNECT_STRING || 'mongodb://192.168.88.13:27017/passport'
+mongoose.connect(mongoConnectString, {
+  useNewUrlParser: true,
+  useCreateIndex: true
+})
+
 
 // creation de l'app
 var app = express();
 app.sockIO = sockIO;
 
+// Middleware
+
+const passportControl = require('./lib/passport-control');
+const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+
+
+// Routes
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var socketIORouter = require('./routes/socketio');
+var apiRouter = require('./routes/api');
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.use(cookieParser());
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: false }))
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(flash())
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
+app.use(passportControl.initialize())
+app.use(passportControl.session())
+app.locals.globalVariable={dbcon:mongoose}
 
-
-app.use('/', indexRouter);
+app.use('/',indexRouter)
 app.use('/users', usersRouter);
 app.use('/test/socketio',socketIORouter);
+app.use('/api',apiRouter);
 
-// add & configure middleware
-app.use(session({
-  genid: (req) => {
-    console.log('Inside the session middleware')
-    console.log(req.sessionID)
-    return uuid() // use UUIDs for session IDs
-  },
-  store: new FileStore(),
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true
-}))
+
+
+
+app.get('/test', function(req, res, next) {
+  res.render('test-page', { title: 'Test' , myid: req.sessionID , user: req.user});
+});
+
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -12,5 +12,14 @@ $(document).ready(function () {
     $('#btn_testsocket').on('click', function () {
         socket.emit('client_message', "message de test");
     });
+    $.ajax({
+        url: "/api/status",
+        cache: false
+      })
+      .done(function( data ) {
+        $( "#apistatus" ).append( JSON.stringify(data.status) );
+        $( "#dbstatus" ).append( JSON.stringify(data.db) );
+      });
+
 
 });

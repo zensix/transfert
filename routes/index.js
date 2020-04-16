@@ -1,40 +1,62 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express'),
+      passport = require('passport'),
+      User = require('../models/User'),
+      router = express.Router()
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  console.log(req.sessionID)
-  res.render('index', { title: 'Express', myid: req.sessionID });
-});
-router.get('/test', function(req, res, next) {
-  res.render('test-page', { title: 'Test' , myid: req.sessionID });
-});
-
-router.post('/login',(req,res) => {
-  sess = req.session;
-  sess.email = req.body.email;
-  res.end('done');
-});
-
-router.get('/admin',(req,res) => {
-  sess = req.session;
-  if(sess.email) {
-      res.write(`<h1>Hello ${sess.email} </h1><br>`);
-      res.end('<a href='+'/logout'+'>Logout</a>');
+/* Home */
+router.get('/', (req, res) => {
+  
+  // Check if a user is logged-in, is authenticated
+  if ( !req.isAuthenticated() ) {
+    res.redirect('/login')
+    return
   }
-  else {
-      res.write('<h1>Please login first.</h1>');
-      res.end('<a href='+'/'+'>Login</a>');
-  }
-});
 
-router.get('/logout',(req,res) => {
-  req.session.destroy((err) => {
-      if(err) {
-          return console.log(err);
-      }
-      res.redirect('/');
-  });
+  res.render('index', {
+    title: 'Home',
+    user: req.user
+  })
+})
 
-});
-module.exports = router;
+/* Signup */
+router.get('/signup', (req, res) => {
+  res.render('signup', { title: 'Signup' })
+})
+
+router.post('/signup', (req, res) => {
+  let user = new User({
+    username: req.body.username,
+    password:req.body.password
+  })
+
+  user.save().then(() => {
+    req.login(user, (err) => {
+      if (err) { res.redirect('/signup') }
+      res.redirect('/')
+    })
+  }).catch((err) => {
+    res.redirect('/signup')
+  })
+})
+/* Login */
+router.get('/login', (req, res) => {
+
+  // If any error
+  console.log(req.flash('error'))
+
+  res.render('login', { title: 'Login' })
+})
+
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
+
+/* Logout */
+router.get('/logout', (req, res) => {
+  req.logout()
+  res.redirect('/login')
+})
+
+module.exports = router
