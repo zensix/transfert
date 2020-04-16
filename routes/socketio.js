@@ -1,9 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-    res.render('test-page', { title: 'Test' });
-  });
+
 
 router.get('/toto', (req, res, next) => {
     console.log("in route socketio")

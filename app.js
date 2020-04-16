@@ -1,9 +1,11 @@
 var createError = require('http-errors');
 var express = require('express');
 var session = require('express-session');
+const FileStore = require('session-file-store')(session);
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const uuid = require('uuid/v4');
 
 var sockIO = require('socket.io')();
 
@@ -26,9 +28,25 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
+
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/test/socketio',socketIORouter);
+
+// add & configure middleware
+app.use(session({
+  genid: (req) => {
+    console.log('Inside the session middleware')
+    console.log(req.sessionID)
+    return uuid() // use UUIDs for session IDs
+  },
+  store: new FileStore(),
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
