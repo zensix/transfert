@@ -34,6 +34,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var socketIORouter = require('./routes/socketio');
 var apiRouter = require('./routes/api');
+var utilsRouter = require('./routes/utils');
 
 
 // view engine setup
@@ -54,10 +55,13 @@ app.use(passportControl.initialize())
 app.use(passportControl.session())
 app.locals.globalVariable={dbcon:mongoose}
 
-app.use('/',indexRouter)
+app.use('/utils',utilsRouter);
+app.use('/',indexRouter);
 app.use('/users', usersRouter);
 app.use('/test/socketio',socketIORouter);
 app.use('/api',apiRouter);
+
+global.__basedir = __dirname;
 
 
 

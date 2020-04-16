@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h2  #{title}
+  p Welcome #{user.username}!
+  p Directory #{iconsdir}
+  p files 
+
+  ul
+    each icon in files
+      li= icon
+      img(src="/icons/"+icon, alt="", width="32" ,height="32" ,title="#{icon}")
+block localscript
+   script(src='/javascripts/app.js')
