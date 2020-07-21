@@ -1,9 +1,28 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express'),
+      Project = require('../models/User'),
+      router = express.Router()
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+
+router.use(function (req, res, next) {
+    if ( !req.isAuthenticated() ) {
+        res.redirect('/login')
+        return
+    }
+    if( !req.user.admin &&  req.user.username != 'admin') {
+      res.render('notauthorized', {
+        title: 'Acces non authorisé',
+        user: req.user
+    })
+      return
+    }
+    next();
 });
 
-module.exports = router;
+router.get('/', (req, res) => {
+    res.render('users', {
+        title: 'Utilisateurs',
+        user: req.user
+    })
+})
+
+module.exports = router

@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h4 #{title} #{project.name}
+  h5 Nom: #{project.name}
+  h5 Environnement: #{project.environnement}
+  h5 Status: #{project.status}
+  hr
+  h5 Tags:
+  div#tags.h4
+  hr
+  h5 PV Claims:
+  div#pvcs.h4
+
+
+  div
+    code #{project}
+
+block localscript
+   script var user =  JSON.parse('!{JSON.stringify(user)}');  
+   script var globaldata =  JSON.parse('!{JSON.stringify(project)}');
+   script var tags = new Map()
+   script(src='/javascripts/app.js')
+   script(src='/javascripts/project-view.js')

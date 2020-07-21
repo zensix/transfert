@@ -1,0 +1,73 @@
+extends layout
+
+block content
+  h4 #{title}
+  p Edition du project #{project.name} #{user.name}
+ 
+  div.editprojectdiv
+    form#editprojectform()
+      div.form-row
+        div.form-group.col-md-4
+          label(for='name') Nom:
+          input.form-control#name(name="name", type="text",value=project.name)
+        div.form-group.col-md-4
+          label(for="Environnement") Environnement:
+          select.form-control.mb-2.mr-sm-2#environnement(name="environnement",value=project.environnement)
+            each item in ["PRD","OAT"]
+              option( value=item selected=(project.environnement == item )) #{item}
+        div.form-group.col-md-4
+          label(for="status") Status:
+          input.form-control#status(name="status", type="text",value=project.status)
+      div.form-row
+        div.form-group.col
+          label(for="status") Notes:
+          textarea.form-control#notes(name="notes", rows="3")
+
+    div.row
+      .col-1
+        h4 Tags
+      .col-9#tags
+
+    div.form-group
+      label(for="tagsTextarea") Ajouter/modifier tag ( saisir key=value)
+      input.form-control#tagsTextarea(type="text")
+
+    div
+      h4 PVC
+      div#pvc
+          each pv in project.pv
+            form.form-inline.pvcupdate
+              input(type="hidden", name="_id", value=pv._id)
+              label.sr-only Name
+              input.form-control.form-control-sm.mb-2.mr-sm-2(type="text", name="name", value=pv.name)
+              label.sr-only Size
+              input.form-control.form-control-sm.mb-2.mr-sm-2(type="text",name="size", value=pv.size)
+              label.sr-only Mode
+              select.form-control.mb-2.mr-sm-2#environnement(name="mode",value=pv.mode)
+                each item in ["RO","RWMany"]
+                  option( value=item selected=(pv.mode == item )) #{item}
+              button.btn.btn-primary.mb-2(type="submit") Modifier
+              button.btn.btn-danger.mb-2.btn-pvc-remove(id=pv._id) Effacer
+          form.form-inline#addpvcform
+            label.sr-only Name
+            input.form-control.mb-2.mr-sm-2(type="text", name="name", placeholder="nom")
+            label.sr-only Size
+            input.form-control.mb-2.mr-sm-2(type="text",name="size", placeholder="Size en GO")
+            label.sr-only Mode
+            select.form-control.mb-2.mr-sm-2(name="mode")
+              option RO
+              option RWMany
+            button.btn.btn-primary.mb-2(type="submit") Ajouter
+    
+
+
+
+  div
+    code #{project}
+
+block localscript
+   script var user =  JSON.parse('!{JSON.stringify(user)}');  
+   script var globaldata =  JSON.parse('!{JSON.stringify(project)}');
+   script var tags = new Map()
+   script(src='/javascripts/app.js')
+   script(src='/javascripts/project-edit.js')

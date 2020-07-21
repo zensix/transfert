@@ -9,7 +9,7 @@ var sockIO = require('socket.io')();
 // MongoDB
 const mongoose = require('mongoose')
 
-var mongoConnectString=process.env.MONGO_CONNECT_STRING || 'mongodb://192.168.88.13:27017/passport'
+var mongoConnectString=process.env.MONGO_CONNECT_STRING || 'mongodb://admproject:admproject@192.168.88.13:27017/projectform'
 mongoose.connect(mongoConnectString, {
   useNewUrlParser: true,
   useCreateIndex: true
@@ -35,6 +35,7 @@ var usersRouter = require('./routes/users');
 var socketIORouter = require('./routes/socketio');
 var apiRouter = require('./routes/api');
 var utilsRouter = require('./routes/utils');
+var projectRouter = require('./routes/project');
 
 
 // view engine setup
@@ -57,20 +58,13 @@ app.locals.globalVariable={dbcon:mongoose}
 
 app.use('/utils',utilsRouter);
 app.use('/',indexRouter);
-app.use('/users', usersRouter);
 app.use('/test/socketio',socketIORouter);
 app.use('/api',apiRouter);
+app.use('/project',projectRouter);
+app.use('/user',usersRouter);
+
 
 global.__basedir = __dirname;
-
-
-
-
-app.get('/test', function(req, res, next) {
-  res.render('test-page', { title: 'Test' , myid: req.sessionID , user: req.user});
-});
-
-
 
 
 

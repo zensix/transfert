@@ -16,6 +16,16 @@ var userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  active: {
+    type: Boolean,
+    required: true,
+    default: true
+  },
+  admin: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 })
 
@@ -33,6 +43,18 @@ userSchema.pre('save', function(next) {
     next()
   })
 })
+
+userSchema.methods.toggleadmin = function() {
+  var user = this
+  user.admin = !user.admin
+  this.save()
+}
+
+userSchema.methods.toggleactive = function() {
+  var user = this
+  user.active = !user.active
+  this.save()
+}
 
 // Password verification
 userSchema.methods.login = function(password) {

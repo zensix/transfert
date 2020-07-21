@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  h2 #{title}
+  button#new_project.btn.btn-primary.btn-sm(type="button") Nouveau 
+
+  div.d-none#createprojectform
+    form(method='POST' action='/project')
+      div.form-group
+        label(for='name') Nom:
+        input#name.form-control(type='text', placeholder='name', name='name' ,required)
+      div.form-group
+        label(for="Environnement") Environnement:
+        select.form-control(name='environnement')
+          option OAT
+          option PRD
+      div
+        input(type="submit", value="Valider")
+  
+  div.d-none#editprojectdiv
+    h2 Edition
+    form#editprojectform(method='POST' action='/api/project')
+      div.form-group
+        label(for='name') Nom:
+        input#name.form-control(type='text', placeholder='name', name='name' ,required)
+      div.form-group
+        label(for="Environnement") Environnement:
+        select.form-control(name='environnement')
+          option OAT
+          option PRD
+      div
+        input(type="submit", value="Valider")
+
+  div#liste.container
+
+block localscript
+   script var user =  JSON.parse('!{JSON.stringify(user)}');  
+
+   script(src='/javascripts/app.js')
+   script(src='/javascripts/project.js')

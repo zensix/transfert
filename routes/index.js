@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     res.redirect('/login')
     return
   }
-
+  
   res.render('index', {
     title: 'Home',
     user: req.user

@@ -1,30 +1,16 @@
 // sidebar
 nav#sidebar
     div.sidebar-header
-        h3 Sidebar
+        h3 OCP Projects
     ul.list-unstyled.components
-        p Dummy header
+        p Gestion des demandes de projet Openshift
         li
            a(href="/") Home
         li
-           a(href="#") About
+           a(href="/project") Projects
         li
-            a.dropdown-toggle(href="#pageSubmenu", data-toggle="collapse", aria-expanded="false") Pages
+            a.dropdown-toggle(href="#pageSubmenu", data-toggle="collapse", aria-expanded="false") Admin
             ul#pageSubmenu.collapse.list-unstyled
-                li
-                    a(href="#") Page 1
-                li
-                    a(href="#") Page 2
-                li
-                    a(href="#") Page 3
+                    a(href="/user") Utilisateurs
         li
-            a.dropdown-toggle(href="#TestSubmenu", data-toggle="collapse", aria-expanded="false") Tests
-            ul#TestSubmenu.collapse.list-unstyled
-                li
-                    a(href="/test") test
-                li 
-                    a(href='/utils/show-icons') Icons
-
-            a(href="#") Portfolio
-        li
-            a(href="#") Contacts 
+            a(href="/contact") Contacts 
