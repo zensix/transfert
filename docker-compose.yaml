@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admproject
+      MONGO_INITDB_ROOT_PASSWORD: admproject
+    ports:
+      - 27017:27017
+  front:
+    build: .
+    restart: always
+    ports:
+      - 3001:3000
+    environment:
+      MONGO_CONNECT_STRING: 'mongodb://admproject:admproject@mongo:27017/projectform' 
+      PORT: '3000'
