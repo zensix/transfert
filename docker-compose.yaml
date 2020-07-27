@@ -17,3 +17,4 @@ services:
     environment:
       MONGO_CONNECT_STRING: 'mongodb://admproject:admproject@mongo:27017/projectform' 
       PORT: '3000'
+      
