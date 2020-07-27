@@ -9,11 +9,18 @@ var sockIO = require('socket.io')();
 // MongoDB
 const mongoose = require('mongoose')
 
-var mongoConnectString=process.env.MONGO_CONNECT_STRING || 'mongodb://admproject:admproject@192.168.88.13:27017/projectform'
+var mongoConnectString=process.env.MONGO_CONNECT_STRING
+//var mongoConnectString='mongodb://root:root@mongo:27017/projectform'
+mongoConnectString=process.env.MONGO_CONNECT_STRING+'?authSource=mongo&w=1'
+mongoConnectString="mongodb://"+process.env.MONGO_USER+":"+process.env.MONGO_PASSWORD+"@mongo:27017/"+process.env.MONGO_DB
+console.log("MONGO_USER",process.env.MONGO_USER)
+console.log(mongoConnectString)
 mongoose.connect(mongoConnectString, {
   useNewUrlParser: true,
-  useCreateIndex: true
-})
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000
+}).catch(err => console.log(err.reason.error));
 
 
 // creation de l'app
