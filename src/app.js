@@ -68,14 +68,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.locals.globalVariable={dbcon:mongoose}
 
-app.use('/utils',utilsRouter);
+
 app.use('/',indexRouter);
-app.use('/test/socketio',socketIORouter);
 app.use('/api',apiRouter);
 app.use('/project',projectRouter);
 app.use('/user',usersRouter);
 
 
+
+
+app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
+app.use('/malihu-custom-scrollbar-plugin', express.static(__dirname + '/node_modules/malihu-custom-scrollbar-plugin'));
+app.use('/popper',express.static(__dirname +'/node_modules/@popperjs/core/dist'));
+app.use('/bootstrap-icons.svg',express.static(__dirname +'/node_modules/bootstrap-icons/bootstrap-icons.svg'));
+app.use('/icons',express.static(__dirname +'/node_modules/bootstrap-icons/icons'));
 // Configure passport-local to use account model for authentication
 
 const User = require('./models/User');

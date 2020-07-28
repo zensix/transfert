@@ -16,11 +16,17 @@ block content
             each item in ["PRD","OAT"]
               option( value=item selected=(project.environnement == item )) #{item}
         div.form-group.col-md-4
-          label(for="status") Status:
-          input.form-control#status(name="status", type="text",value=project.status)
+            label(for="status") Status:
+            if user.admin
+              select.form-control.mb-2.mr-sm-2#status(name="status",value=project.status)
+                each item in ["Requested","Deploy"]
+                  option( value=item selected=(project.status == item )) #{item}
+            else
+              input.form-control#status(name="status", type="text",readonly,value=project.status)
+          
       div.form-row
         div.form-group.col
-          label(for="status") Notes:
+          label(for="notes") Notes:
           textarea.form-control#notes(name="notes", rows="3")
 
     div.row
@@ -43,7 +49,7 @@ block content
               label.sr-only Size
               input.form-control.form-control-sm.mb-2.mr-sm-2(type="text",name="size", value=pv.size)
               label.sr-only Mode
-              select.form-control.mb-2.mr-sm-2#environnement(name="mode",value=pv.mode)
+              select.form-control.mb-2.mr-sm-2#mode(name="mode",value=pv.mode)
                 each item in ["RO","RWMany"]
                   option( value=item selected=(pv.mode == item )) #{item}
               button.btn.btn-primary.mb-2(type="submit") Modifier
@@ -61,9 +67,6 @@ block content
     
 
 
-
-  div
-    code #{project}
 
 block localscript
    script var user =  JSON.parse('!{JSON.stringify(user)}');  

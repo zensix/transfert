@@ -8,9 +8,11 @@ nav#sidebar
            a(href="/") Home
         li
            a(href="/project") Projects
-        li
-            a.dropdown-toggle(href="#pageSubmenu", data-toggle="collapse", aria-expanded="false") Admin
-            ul#pageSubmenu.collapse.list-unstyled
-                    a(href="/user") Utilisateurs
+        if user
+            if user.admin
+                li
+                    a.dropdown-toggle(href="#pageSubmenu", data-toggle="collapse", aria-expanded="false") Admin
+                    ul#pageSubmenu.collapse.list-unstyled
+                        a(href="/user") Utilisateurs
         li
             a(href="/contact") Contacts 

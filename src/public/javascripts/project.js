@@ -24,13 +24,14 @@ function showproject(data){
     row.append('<div class="col">'+data._ownerId.username)
     row.append('<div class="col">'+data.environnement)
     row.append('<div class="col">'+data.status)
-    if( user._id == data._ownerId._id){
-        row.append('<a href="/project/edit/'+data._id+'"><img src="/icons/pen.svg" alt="" width="24" height="24" ></a>')
-        row.append('<button class="btn btn-sm delete-project"><img src="/icons/trash.svg" alt="" width="24" height="24"></button>')
+    if( user._id == data._ownerId._id || user.admin ){
+        row.append('<a href="/project/edit/'+data._id+'"><svg class="bi text-success"  width="24" height="24" fill="currentColor"><use xlink:href="/bootstrap-icons.svg#pen"/></svg></a>')
+        row.append('<button class="btn btn-sm delete-project"><svg class="bi text-danger"  width="24" height="24" fill="currentColor"><use xlink:href="/bootstrap-icons.svg#trash-fill"/></button>')
     }
     else{
-        row.append('<a href="/project/view/'+data._id+'"><img src="/icons/eye.svg" alt="" width="24" height="24"></a>')
-        row.append('<button class="btn btn-sm none-project"><img src="/icons/x-circle.svg" alt="" width="24" height="24"></button>')
+        //row.append('<a href="/project/view/'+data._id+'"><img src="/icons/eye.svg" alt="" width="24" height="24"></a>')
+        row.append('<a href="/project/view/'+data._id+'"><svg class="bi text-info"  width="24" height="24" fill="currentColor"><use xlink:href="/bootstrap-icons.svg#eye"/></svg></a>')
+        row.append('<button class="btn btn-sm none-project"><svg class="bi text-secondary"  width="24" height="24" fill="currentColor"><use xlink:href="/bootstrap-icons.svg#shield-slash-fill"/></button>')
         
 
     }

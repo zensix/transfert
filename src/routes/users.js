@@ -9,8 +9,7 @@ router.use(function (req, res, next) {
         return
   }
 
-  if( !req.user.admin &&  req.user.username != 'admin') {
-  //   if( !req.user.admin) {
+  if( !req.user.admin) {
       res.render('notauthorized', {
         title: 'Acces non authorisé',
         user: req.user

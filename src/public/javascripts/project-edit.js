@@ -37,7 +37,6 @@ function updateproject(data){
         url: "/api/project/"+id,
         data: data
       }).done(function(data) {
-          console.log(data)
         window.location.href = '/project/edit/'+id;
       });
 }
@@ -105,6 +104,10 @@ $(document).ready(function () {
 
     $("#environnement").on("change", function(e) { 
         updateproject({ environnement: $(this).val()})
+    });
+
+    $("#status").on("change", function(e) { 
+        updateproject({ status: $(this).val()})
     });
 
     $("#notes").on("change", function(e) { 
