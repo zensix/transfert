@@ -9,7 +9,7 @@ router.use(function (req, res, next) {
         return
     }
 
-    if ( !req.isAuthenticated() && req.user.usename != "admin") {
+    if ( !req.isAuthenticated() && req.user.username != "admin") {
       res.redirect('/login')
       return
     }
