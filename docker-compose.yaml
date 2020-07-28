@@ -15,9 +15,10 @@ services:
 
   app:
     environment:
-      MONGO_USER: app
-      MONGO_PASSWORD: app
-      MONGO_DB: projectform
+      DATABASE_SERVICE_NAME: mongo
+      MONGODB_USER: app
+      MONGODB_PASSWORD: app
+      MONGODB_DATABASE: projectform
       PORT: 3000
     container_name: front
     restart: always

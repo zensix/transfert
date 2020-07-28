@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 var mongoConnectString=process.env.MONGO_CONNECT_STRING
 //var mongoConnectString='mongodb://root:root@mongo:27017/projectform'
 //mongoConnectString=process.env.MONGO_CONNECT_STRING+'?authSource=mongo&w=1'
-mongoConnectString="mongodb://"+process.env.MONGO_USER+":"+process.env.MONGO_PASSWORD+"@mongo:27017/"+process.env.MONGO_DB
+mongoConnectString="mongodb://"+process.env.MONGODB_USER+":"+process.env.MONGODB_PASSWORD+"@"+process.env.DATABASE_SERVICE_NAME+":27017/"+process.env.MONGODB_DATABASE
 console.log("MONGO_USER",process.env.MONGO_USER)
 console.log(mongoConnectString)
 mongoose.connect(mongoConnectString, {
