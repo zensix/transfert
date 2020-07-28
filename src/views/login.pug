@@ -1,6 +1,8 @@
 extends layout
 
 block content
+  if message != ''
+    .alert.alert-error #{message}
   form(method='POST' action='/login')
     div.form-group
       label(for='username') Login:
@@ -10,7 +12,9 @@ block content
       input#password.form-control(type='password', placeholder='password' ,name='password' ,required)
     div
       input(type="submit", value="Log in")
-
+    hr
+    a(href='/')
+      button.btn.btn-primary(type="button") Cancel
 
 block localscript
    script(src='/javascripts/app.js')

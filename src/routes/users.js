@@ -4,10 +4,10 @@ const express = require('express'),
 
 
 router.use(function (req, res, next) {
-    if ( !req.isAuthenticated() ) {
+  if ( !req.isAuthenticated() ) {
         res.redirect('/login')
         return
-    }
+  }
 
   if( !req.user.admin &&  req.user.username != 'admin') {
   //   if( !req.user.admin) {

@@ -2,40 +2,18 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
-const uuid = require('uuid/v4');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var flash = require('connect-flash');
+var session = require('express-session');
 
 var sockIO = require('socket.io')();
 
 // MongoDB
-const mongoose = require('mongoose')
-
-var mongoConnectString=process.env.MONGO_CONNECT_STRING
-//var mongoConnectString='mongodb://root:root@mongo:27017/projectform'
-//mongoConnectString=process.env.MONGO_CONNECT_STRING+'?authSource=mongo&w=1'
-mongoConnectString="mongodb://"+process.env.MONGODB_USER+":"+process.env.MONGODB_PASSWORD+"@"+process.env.DATABASE_SERVICE_NAME+":27017/"+process.env.MONGODB_DATABASE
-console.log("MONGO_USER",process.env.MONGO_USER)
-console.log(mongoConnectString)
-mongoose.connect(mongoConnectString, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000
-}).catch(err => console.log(err.reason.error));
-
-
-// creation de l'app
-var app = express();
-app.sockIO = sockIO;
-
-// Middleware
-
-const passportControl = require('./lib/passport-control');
-const cookieParser = require('cookie-parser');
-const flash = require('connect-flash');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-
-
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');
 // Routes
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -44,23 +22,50 @@ var apiRouter = require('./routes/api');
 var utilsRouter = require('./routes/utils');
 var projectRouter = require('./routes/project');
 
+var mongoConnectString=process.env.MONGO_CONNECT_STRING
+//var mongoConnectString='mongodb://root:root@mongo:27017/projectform'
+//mongoConnectString=process.env.MONGO_CONNECT_STRING+'?authSource=mongo&w=1'
+MONGODB_USER = process.env.MONGODB_USER || "admproject"
+MONGODB_PASSWORD = process.env.MONGODB_PASSWORD || "admproject"
+DATABASE_SERVICE_NAME = process.env.DATABASE_SERVICE_NAME || "192.168.88.13"
+MONGODB_DATABASE = process.env.MONGODB_USER || "projectform"
+mongoConnectString="mongodb://"+MONGODB_USER+":"+MONGODB_PASSWORD+"@"+DATABASE_SERVICE_NAME+":27017/"+MONGODB_DATABASE
+mongoose
+    .connect(mongoConnectString, { useNewUrlParser: true,  useUnifiedTopology: true  , useCreateIndex: true})
+    .then(console.log(`MongoDB connected ${mongoConnectString}`))
+    .catch(err => console.log(err));
+
+
+// creation de l'app
+var app = express();
+app.sockIO = sockIO;
+
+
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(cookieParser());
-app.use(session({ secret: 'cats', resave: false, saveUninitialized: false }))
+app.use(session({
+  name: 'session-id',
+  secret: '123-456-789',
+  saveUninitialized: false,
+  resave: false
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(flash())
+// Configure passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(passportControl.initialize())
-app.use(passportControl.session())
 app.locals.globalVariable={dbcon:mongoose}
 
 app.use('/utils',utilsRouter);
@@ -71,9 +76,26 @@ app.use('/project',projectRouter);
 app.use('/user',usersRouter);
 
 
+// Configure passport-local to use account model for authentication
+
+const User = require('./models/User');
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 global.__basedir = __dirname;
 
-
+// check if admin exist
+User.findByUsername("admin").then(function(sanitizedUser) {
+  if(sanitizedUser == null){
+    console.log("create admin")
+    User.register(new User({username: "admin", email: "" , admin: true}), "admin" , ( err, user) => {
+        if(err) console.log(err)
+        console.log("user: admin password:admin created.")
+    })
+  }
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

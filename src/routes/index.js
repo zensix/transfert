@@ -22,40 +22,70 @@ router.get('/signup', (req, res) => {
   res.render('signup', { title: 'Signup' })
 })
 
-router.post('/signup', (req, res) => {
-  let user = new User({
-    username: req.body.username,
-    password:req.body.password
-  })
 
-  user.save().then(() => {
-    req.login(user, (err) => {
-      if (err) { res.redirect('/signup') }
-      res.redirect('/')
-    })
-  }).catch((err) => {
-    res.redirect('/signup')
-  })
-})
 /* Login */
-router.get('/login', (req, res) => {
 
-  // If any error
-  console.log(req.flash('error'))
-
-  res.render('login', { title: 'Login' })
+router.get('/login', (req, res, next) => {
+  res.render('login',  {user: req.user, message: req.flash('error')});
 })
 
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+
+router.post('/login', passport.authenticate('local',{ failureRedirect: '/user/login', failureFlash: true }), (req, res) => {
+  User.findOne({
+    username: req.body.username
+  }, (err, person) => {
+    res.redirect('/')
+  })
+});
+
+router.post('/signup', (req, res) => {
+  User.register(new User({
+    username: req.body.username,
+    email: req.body.email
+  }),
+  req.body.password, (err, user) => {
+    if (err) {
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({
+        err: err
+      });
+    } else {
+      passport.authenticate('local')(req, res, () => {
+        User.findOne({
+          username: req.body.username
+        }, (err, person) => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({
+            success: true,
+            status: 'Registration Successful!',
+          });
+        });
+      })
+    }
+  })
+});
+
+
 
 /* Logout */
-router.get('/logout', (req, res) => {
-  req.logout()
-  res.redirect('/login')
+router.get('/logout', (req, res, next) => {
+  if (req.session) {
+    req.logout();
+    req.session.destroy((err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.clearCookie('session-id');
+        res.redirect('/')
+      }
+    });
+  } else {
+    var err = new Error('You are not logged in!');
+    err.status = 403;
+    next(err);
+  }
 });
 
 /* Logout */

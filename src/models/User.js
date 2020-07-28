@@ -1,21 +1,16 @@
-const mongoose = require('mongoose'),
-      bcrypt = require('bcrypt')
+var mongoose = require('mongoose');
+var passportLocalMongoose = require('passport-local-mongoose');
 
-// Mongoose Model
-var userSchema = new mongoose.Schema({
+var UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    index: true,
     unique: true,
-    minlength: 2,
-    maxlength: 16,
-    lowercase: true,
-    required: true,
-
+    required: true
   },
-  password: {
+  email: {
     type: String,
-    required: true,
+    unique: true,
+    required: false
   },
   active: {
     type: Boolean,
@@ -27,45 +22,23 @@ var userSchema = new mongoose.Schema({
     required: true,
     default: false
   }
-})
+});
 
-// Hash password before saving
-userSchema.pre('save', function(next) {
-  var user = this
-
-  if ( !user.isModified('password') ) return next()
-
-  bcrypt.hash(user.password, 10, (err, hash) => {
-    if (err) {
-      return next(err)
-    }
-    user.password = hash
-    next()
-  })
-})
-
-userSchema.methods.toggleadmin = function() {
-  var user = this
-  user.admin = !user.admin
-  this.save()
+UserSchema.methods.toggleadmin = function() {
+    var user = this
+    user.admin = !user.admin
+    this.save()
 }
 
-userSchema.methods.toggleactive = function() {
+UserSchema.methods.toggleactive = function() {
   var user = this
   user.active = !user.active
   this.save()
 }
 
-// Password verification
-userSchema.methods.login = function(password) {
-  var user = this
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, user.password, (err, result) => {
-      if ( err ) { reject(err) }
-      resolve()
-    })
-  })
-}
 
-// Export Mongoose "User" model
-module.exports = mongoose.model('User', userSchema)
+UserSchema.plugin(passportLocalMongoose,{selectFields : 'username email admin active'});
+
+var User = mongoose.model('User', UserSchema);
+module.exports = User;
+
