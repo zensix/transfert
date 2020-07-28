@@ -11,7 +11,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
 
     volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./src/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   app:
     environment:
