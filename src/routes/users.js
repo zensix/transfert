@@ -8,15 +8,7 @@ router.use(function (req, res, next) {
         res.redirect('/login')
         return
   }
-
-  if( !req.user.admin) {
-      res.render('notauthorized', {
-        title: 'Acces non authorisé',
-        user: req.user
-    })
-      return
-    }
-    next();
+  next();
 });
 
 router.get('/', (req, res) => {
@@ -48,5 +40,47 @@ router.post('/profile', (req, res) => {
   })
 })
 
+router.get('/changepassword', (req, res) => {
+  User.findOne({username: req.user.username}, function (err, profile) {
+    if(err) console.log(err)
+    res.render('changepassword', {
+      title: 'Profile',
+      user: req.user,
+      profile: profile
+      })
+  })
+})
+router.post('/changepassword', (req, res) => {
+  if (req.session) {
+    var username = req.session.passport.user
+    var oldpassword= req.body.oldpassword
+    var newpassword= req.body.newpassword
+    User.findByUsername(username).then(function(sanitizedUser) {
+      if (sanitizedUser) {
+          sanitizedUser.changePassword(oldpassword,newpassword, function(err) {
+            if(err) console.error(err);
+            sanitizedUser.save();
+            res.render('message', {
+              title: 'Information',
+              user: req.user,
+              message: 'password reset successful'
+            })
+          });
+      } else {
+        res.render('message', {
+          title: 'Information',
+          user: req.user,
+          message: 'user does not exist'
+        })
+      }
+    }, function(err) {
+        console.error(err);
+    })
+  } else {
+    var err = new Error('You are not logged in!');
+    err.status = 403;
+    next(err);
+  }
+});
 
 module.exports = router

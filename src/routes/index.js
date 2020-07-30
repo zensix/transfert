@@ -19,14 +19,14 @@ router.get('/', (req, res) => {
 
 /* Signup */
 router.get('/signup', (req, res) => {
-  res.render('signup', { title: 'Signup' })
+  res.render('signup', { title: 'Creer votre compte' })
 })
 
 
 /* Login */
 
 router.get('/login', (req, res, next) => {
-  res.render('login',  {user: req.user, message: req.flash('error')});
+  res.render('login',  {title:'Connection',user: req.user, message: req.flash('error')});
 })
 
 
@@ -41,7 +41,8 @@ router.post('/login', passport.authenticate('local',{ failureRedirect: '/user/lo
 router.post('/signup', (req, res) => {
   User.register(new User({
     username: req.body.username,
-    email: req.body.email
+    email: req.body.email,
+    lob: req.body.lob
   }),
   req.body.password, (err, user) => {
     if (err) {
@@ -55,12 +56,11 @@ router.post('/signup', (req, res) => {
         User.findOne({
           username: req.body.username
         }, (err, person) => {
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json({
-            success: true,
-            status: 'Registration Successful!',
-          });
+          res.render('message', {
+            title: 'Information',
+            user: req.user,
+            message: 'Enregistrement reussie.'
+          })
         });
       })
     }

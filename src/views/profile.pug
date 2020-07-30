@@ -4,13 +4,20 @@ block content
   h3 #{title} #{profile.username}
   form(method='POST' action='/user/profile')
     div.form-group
-      label(for='username') Login:
-      input#username.form-control(type='text', placeholder='login', name='username' ,required, value=profile.username)
+      label(for='username') Compte:
+      input#username.form-control(type='text', placeholder='nom de votre compte', name='username' ,required, value=profile.username)
     div.form-group
       label(for='email') Email:
       input#username.form-control(type='text', placeholder='email', name='email' ,required,value=profile.email)
+    div.form-group
+      label(for='lob') Lob:
+      input#username.form-control(type='text', placeholder='lob', name='lob' ,value=profile.lob)
     div
-      input(type="submit", value="Modifier")
+      input.btn.btn-primary(type="submit", value="Modifier")
+  hr
+  a(href='/user/changepassword')
+    button.btn.btn-primary(type="button") Changer votre mot de passe
+  hr
 
 block localscript
    script(src='/javascripts/app.js')

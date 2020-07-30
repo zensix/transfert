@@ -2,21 +2,63 @@ extends layout
 
 block content
   h4 #{title} #{project.name}
-  h5 Nom: #{project.name}
-  h5 Environnement: #{project.environnement}
-  h5 Status: #{project.status}
-  h5 Commentaires: #{project.commentaire}
+  h6 Propriétaire: 
+    span#username
+  h6 Nom: #{project.name}
+  h6 Lob: #{project.lob}
+  h6 Environnement: #{project.environnement}
+  h6 Status: #{project.status}
+  h6 Date de Création: #{project.created}
+  h6 Commentaires: 
+  p #{project.notes}
   hr
   h5 Tags:
-  div#tags.h4
+  div#tags
   hr
   h5 PV Claims:
-  div#pvcs.h4
+  div#pvcs.h6
+    .row  
+      .col Nom
+      .col Taille
+      .col Type
+
+    each pv in project.pv
+      .row  
+        .col
+          label #{pv.name}
+        .col
+          label #{pv.size} Go
+        .col
+          label #{pv.mode}
+
 
 
 block localscript
    script var user =  JSON.parse('!{JSON.stringify(user)}');  
-   script var globaldata =  JSON.parse('!{JSON.stringify(project)}');
+   script var globaldata =  {}
    script var tags = new Map()
    script(src='/javascripts/app.js')
-   script(src='/javascripts/project-view.js')
+   script(type='text/javascript').
+      function addtagbtn(key,value){
+        var dum = $('<span class="badge badge-primary">'+key+':'+value+'</span>')
+        dum.attr('id', key);
+        $("#tags").append(dum)
+      }
+      function refreshdata(){
+        $.ajax({
+            method: "GET",
+            url: "/api/project/#{_id}"
+        }).done(function(data) {
+            $("#debug").empty().append(JSON.stringify(data))
+            $("#tags").empty()
+            for( key in data.tags){
+                addtagbtn(key,data.tags[key])
+            }
+            $("#username").empty().append(data._ownerId.username)
+            $("#notes").empty().val(data.notes)
+        });
+      }
+      
+      $(document).ready(function () {
+        refreshdata()
+      })

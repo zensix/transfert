@@ -10,7 +10,7 @@ function refreshlist(){
 function showusers(data){
     $("#liste").empty()
     var row = jQuery('<div class="row font-weight-bold"</div>');
-    row.append('<div class="col">Username')
+    row.append('<div class="col">Compte')
     row.append('<div class="col">Admin')
     row.append('<div class="col">Actif')
     $("#liste").append(row)
@@ -19,17 +19,24 @@ function showusers(data){
 }
 
 function showuser(data){
-    var row = jQuery('<div class="row" id='+data._id +'><div>');
+    var row = jQuery('<div class="row" id='+data._id +'></div>');
     row.append('<div class="col">'+data.username)
     if(data.admin){
-        row.append('<div class="col"><button class="btn btn-sm toggle-admin"><img src="/icons/toggle-on.svg">')
+      //  row.append('<div class="col"><button class="btn btn-sm toggle-admin"><img src="/icons/toggle-on.svg">')
+      row.append('<div class="col"><button class="btn btn-sm toggle-admin"><svg class="bi text-success" width="24" height="24"><use xlink:href="/bootstrap-icons.svg#toggle-on"/></svg></button></div>')
+     // row.append('<div class="col"><button class="btn btn-sm toggle-admin"><img src="/icons/toggle-off.svg">')
     } else {
-        row.append('<div class="col"><button class="btn btn-sm toggle-admin"><img src="/icons/toggle-off.svg">')
+      row.append('<div class="col"><button class="btn btn-sm toggle-admin"><svg class="bi text-danger" width="24" height="24"><use xlink:href="/bootstrap-icons.svg#toggle-off"/></svg></button></div>')
+
     }
     if(data.active){
-        row.append('<div class="col"><button class="btn btn-sm toggle-active"><img src="/icons/toggle-on.svg">')
+        row.append('<div class="col"><button class="btn btn-sm toggle-active"><svg class="bi text-success" width="24" height="24"><use xlink:href="/bootstrap-icons.svg#toggle-on"/></svg></button></div>')
+
+    // row.append('<div class="col"><button class="btn btn-sm text-success"><img src="/icons/toggle-on.svg">')
     } else {
-        row.append('<div class="col"><button class="btn btn-sm toggle-active"><img src="/icons/toggle-off.svg">')
+        row.append('<div class="col"><button class="btn btn-sm toggle-active"><svg class="bi text-danger" width="24" height="24"><use xlink:href="/bootstrap-icons.svg#toggle-off"/></svg></button></div>')
+
+  //      row.append('<div class="col"><button class="btn btn-sm text.danger"><img src="/icons/toggle-off.svg">')
     }
     $("#liste").append(row)
 }

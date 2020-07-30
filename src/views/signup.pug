@@ -1,18 +1,24 @@
 extends layout
 
 block content
+  h2 #{title}
+  if message != ''
+    .alert.alert-error #{message}
   form(method='POST' action='/signup')
     div.form-group
-      label(for='username') Login:
+      label(for='username') Compte:
       input#username.form-control(type='text', placeholder='login', name='username' ,required)
     div.form-group
       label(for='email') Email:
       input#username.form-control(type='text', placeholder='email', name='email' ,required)
     div.form-group
-      label(for='password') Password:
+      label(for='lob') Lob:
+      input#lob.form-control(type='text', placeholder='you lob' ,name='lob' ,required)
+    div.form-group
+      label(for='password') Mot de passe:
       input#password.form-control(type='password', placeholder='password' ,name='password' ,required)
     div
-      input(type="submit", value="Register")
+      input.btn.btn-primary(type="submit", value="Register")
 
 
 block localscript

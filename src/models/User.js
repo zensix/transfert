@@ -21,6 +21,12 @@ var UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  lob: {
+    type: String,
+    required: false,
+    lowercase: true,
+    default: ""
   }
 });
 
@@ -37,7 +43,7 @@ UserSchema.methods.toggleactive = function() {
 }
 
 
-UserSchema.plugin(passportLocalMongoose,{selectFields : 'username email admin active'});
+UserSchema.plugin(passportLocalMongoose,{selectFields : 'username email admin active lob'});
 
 var User = mongoose.model('User', UserSchema);
 module.exports = User;

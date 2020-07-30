@@ -20,7 +20,8 @@ var projectSchema = new mongoose.Schema({
   created: { type: Date, default: Date.now },
   environnement: { type: String, default: "OAT" , enum: ['OAT', 'PRD'] },
   status: { type: String, default: "Requested" , enum: ['Requested', 'Created'] },
-  notes: { type: String, default:""},
+  notes: { type: String, default: ""},
+  lob:  { type: String, default: ""},
   tags: {
     type: Map,
     of: String,

@@ -24,18 +24,22 @@ router.get('/projects', (req, res, next) => {
 
 router.get('/project', (req, res, next) => {
     inputdata=req.body
-    Project.findOne(inputdata, function (err, prj) {
+    Project.findOne(inputdata).
+    populate('_ownerId','username').
+    exec(function (err, prj) {
         if (err) return handleError(err);
         res.json(prj);
-      });
+    });
 });
 
 router.get('/project/:id', (req, res, next) => {
     var id = req.params.id;
-    Project.findById(id, function (err, prj) {
-        if (err) console.log(err);
-        res.json(prj);
-      });
+    Project.findById(id).
+        populate('_ownerId','username').
+        exec(function (err, prj) {
+            if (err) return handleError(err);
+            res.json(prj);
+        });
 });
 
 

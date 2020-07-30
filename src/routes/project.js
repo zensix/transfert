@@ -14,7 +14,7 @@ router.use(function (req, res, next) {
 router.get('/', (req, res) => {
     // Check if a user is logged-in, is authenticated
     res.render('project', {
-        title: 'Projects',
+        title: 'Projets',
         user: req.user
     })
 })
@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
             res.json(err)
         } 
         res.render('project', {
-            title: 'Projects',
+            title: 'Projets',
             user: req.user
         });
     });
@@ -38,7 +38,7 @@ router.delete('/:id', (req, res, next) => {
     Project.deleteOne({_id:id},function (err, prj) {
         if (err) return handleError(err);
         res.render('project', {
-            title: 'Projects',
+            title: 'Projet',
             user: req.user
         });
       });
@@ -46,11 +46,12 @@ router.delete('/:id', (req, res, next) => {
 
 router.get('/edit/:id', (req, res) => {
     var id = req.params.id;
+    console.log(id)
     Project.findOne({_id: id}, function (err, prj) {
-        if (err) return handleError(err);
+        if (err) console.log(err);
         console.log(prj)
         res.render('project-edit', {
-            title: 'Projects',
+            title: 'Edition du projet '+ prj.name,
             user: req.user,
             project: prj,
             _id: prj._id
@@ -65,9 +66,10 @@ router.get('/view/:id', (req, res) => {
         if (err) return handleError(err);
         console.log(prj)
         res.render('project-view', {
-            title: 'Projects',
+            title: 'Détail du projet '+ prj.name,
             user: req.user,
-            project: prj
+            project: prj,
+            _id: prj._id
         })
       });
 });

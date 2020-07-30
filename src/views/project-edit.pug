@@ -3,20 +3,22 @@ extends layout
 block content
 
   h4 #{title}
-  p Edition du project #{project.name} #{user.name}
  
   div.editprojectdiv
     form#editprojectform()
       div.form-row
-        div.form-group.col-md-4
+        div.form-group.col-md-3
           label(for='name') Nom:
           input.form-control#name(name="name", type="text",value=project.name)
-        div.form-group.col-md-4
+        div.form-group.col-md-3
+          label(for='lob') Lob:
+          input.form-control#lob(name="lob", type="text",value=project.lob)
+        div.form-group.col-md-3
           label(for="Environnement") Environnement:
-          select.form-control.mb-2.mr-sm-2#environnement(name="environnement",value=project.environnement)
+          select.form-control.mb-2.mr-sm-2#environnement(name="environnement",value=project.lob)
             each item in ["PRD","OAT"]
               option( value=item selected=(project.environnement == item )) #{item}
-        div.form-group.col-md-4
+        div.form-group.col-md-3
             label(for="status") Status:
             if user.admin
               select.form-control.mb-2.mr-sm-2#status(name="status",value=project.status)
@@ -72,7 +74,6 @@ block content
 block localscript
   script var user =  JSON.parse('!{JSON.stringify(user)}');  
   script var tags = new Map()
-  script var globaldata = {}
   script(src='/javascripts/app.js')
   script(type='text/javascript').
     function refreshdata(){
@@ -81,12 +82,11 @@ block localscript
           url: "/api/project/#{_id}"
         }).done(function(data) {
           $("#debug").empty().append(JSON.stringify(data))
-          globaldata =  data
           $("#tags").empty()
-          for( key in globaldata.tags){
-              addtagbtn(key,globaldata.tags[key])
+          for( key in data.tags){
+              addtagbtn(key,data.tags[key])
           }
-          $("#notes").empty().val(globaldata.notes)
+          $("#notes").empty().val(data.notes)
         });
     }
     function updateproject(data){
@@ -133,7 +133,6 @@ block localscript
             if(re.test(data)){
                   var key = data.replace(re, '$1').trim();
                   var value = data.replace(re, '$2').trim();
-                  //globaldata.tags.set(key,value)
                   tags.set(key,value)
                   console.log(tags)
                   $(this).val("");
@@ -153,9 +152,12 @@ block localscript
       $("#status").on("change", function(e) { 
           updateproject({ status: $(this).val()})
       });
+      $("#lob").on("change", function(e) { 
+          updateproject({ lob: $(this).val()})
+      });
 
       $("#notes").on("change", function(e) { 
-          updateproject({ notes: $(this).val().replace(/\r\n/g, '-')})
+          updateproject({ notes: $(this).val().replace(/\r\n/g, ' br ')})
       });
       $('body').on('click',".delete-tag", function(event){ 
           key=$(this).attr("id")
