@@ -15,6 +15,7 @@ function showprojects(data){
     row.append('<div class="col">Environnement')
     row.append('<div class="col">Status')
     $("#liste").append(row)
+    $("#debug").empty().append(JSON.stringify(data))
 
     data.forEach(p =>  showproject(p))
 }

@@ -18,11 +18,11 @@
 })(jQuery);
 
 function refreshdata(){
-    var id=globaldata._id
     $.ajax({
         method: "GET",
-        url: "/api/project/"+id
+        url: "/api/project/"+_id
       }).done(function(data) {
+        $("#debug").empty().append(JSON.stringify(data))
         globaldata =  data
         $("#tags").empty()
         for( key in globaldata.tags){
@@ -47,7 +47,7 @@ function addtag(id,key,value){
         url: "/api/project/"+id+"/addtag",
         data: {key:key,value:value}
       }).done(function(data) {
-        refreshdata()
+        window.location.href = '/project/edit/'+id;
       });
 }
 function deltag(id,key){
@@ -56,7 +56,7 @@ function deltag(id,key){
         url: "/api/project/"+id+"/deltag",
         data: {key:key}
       }).done(function(data) {
-        refreshdata()
+        window.location.href = '/project/edit/'+id;
       });
 }
 function addtagbtn(key,value){
@@ -76,11 +76,8 @@ function showpvc(){
 
 
 $(document).ready(function () {
-    for( key in globaldata.tags){
-        addtagbtn(key,globaldata.tags[key])
-        $('#notes').text(globaldata.notes.replace(/\n/g, '\r\n'))
+    refreshdata()
 
-    }
 
     $("#tagsTextarea").keyup(function(e){
         if((e.keyCode || e.which) == 13) { //Enter keycode
@@ -111,7 +108,7 @@ $(document).ready(function () {
     });
 
     $("#notes").on("change", function(e) { 
-         updateproject({ notes: $(this).val().replace(/\n/g, '\\n')})
+         updateproject({ notes: $(this).val().replace(/\r\n/g, '-')})
     });
 
     $(document).on("click", ".delete-tag", function(e) { 

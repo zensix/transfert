@@ -33,7 +33,7 @@ router.get('/project', (req, res, next) => {
 router.get('/project/:id', (req, res, next) => {
     var id = req.params.id;
     Project.findById(id, function (err, prj) {
-        if (err) return handleError(err);
+        if (err) console.log(err);
         res.json(prj);
       });
 });
@@ -51,35 +51,39 @@ router.post('/project', (req, res, next) => {
 });
 
 router.post('/project/:id', (req, res, next) => {
+    console.log("req.body",req.body)
     var inputdata=req.body
     var id = req.params.id;
     Project.findOneAndUpdate({_id:id},inputdata, function (err, prj) {
-        if (err) return handleError(err);
+        if (err) console.log(err);
         res.json(prj);
-      });
+    });
 });
 
 router.post('/project/:id/addtag', (req, res, next) => {
     var inputdata=req.body
+    console.log("body",req.body)
     var id = req.params.id;
     Project.findById(id, function (err, prj) {
-        prj.addtag(req.body.key,req.body.value)
-        res.json(prj)
+        prj.addtag(inputdata.key,inputdata.value,function(result){
+            res.json(result);
+        });
     });
 });
 
 router.post('/project/:id/deltag', (req, res, next) => {
     var id = req.params.id;
     Project.findById(id, function (err, prj) {
-        prj.deltag(req.body.key)
-        res.json(prj)
+        prj.deltag(req.body.key,function(result){
+            res.json(result);
+        });
     });
 });
 
 router.delete('/project/:id', (req, res, next) => {
     var id = req.params.id;
     Project.deleteOne({_id:id},function (err, prj) {
-        if (err) return handleError(err);
+        if (err) console.log(err);
         res.json(prj);
       });
 });

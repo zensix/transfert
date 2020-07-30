@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h3 #{title} #{profile.username}
+  form(method='POST' action='/user/profile')
+    div.form-group
+      label(for='username') Login:
+      input#username.form-control(type='text', placeholder='login', name='username' ,required, value=profile.username)
+    div.form-group
+      label(for='email') Email:
+      input#username.form-control(type='text', placeholder='email', name='email' ,required,value=profile.email)
+    div
+      input(type="submit", value="Modifier")
+
+block localscript
+   script(src='/javascripts/app.js')

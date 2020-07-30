@@ -1,6 +1,7 @@
 extends layout
 
 block content
+
   h4 #{title}
   p Edition du project #{project.name} #{user.name}
  
@@ -19,7 +20,7 @@ block content
             label(for="status") Status:
             if user.admin
               select.form-control.mb-2.mr-sm-2#status(name="status",value=project.status)
-                each item in ["Requested","Deploy"]
+                each item in ["Requested","Created"]
                   option( value=item selected=(project.status == item )) #{item}
             else
               input.form-control#status(name="status", type="text",readonly,value=project.status)
@@ -49,7 +50,7 @@ block content
               label.sr-only Size
               input.form-control.form-control-sm.mb-2.mr-sm-2(type="text",name="size", value=pv.size)
               label.sr-only Mode
-              select.form-control.mb-2.mr-sm-2#mode(name="mode",value=pv.mode)
+              select.form-control.mb-2.mr-sm-2(name="mode",value=pv.mode)
                 each item in ["RO","RWMany"]
                   option( value=item selected=(pv.mode == item )) #{item}
               button.btn.btn-primary.mb-2(type="submit") Modifier
@@ -64,13 +65,138 @@ block content
               option RO
               option RWMany
             button.btn.btn-primary.mb-2(type="submit") Ajouter
+
     
 
 
-
 block localscript
-   script var user =  JSON.parse('!{JSON.stringify(user)}');  
-   script var globaldata =  JSON.parse('!{JSON.stringify(project)}');
-   script var tags = new Map()
-   script(src='/javascripts/app.js')
-   script(src='/javascripts/project-edit.js')
+  script var user =  JSON.parse('!{JSON.stringify(user)}');  
+  script var tags = new Map()
+  script var globaldata = {}
+  script(src='/javascripts/app.js')
+  script(type='text/javascript').
+    function refreshdata(){
+      $.ajax({
+          method: "GET",
+          url: "/api/project/#{_id}"
+        }).done(function(data) {
+          $("#debug").empty().append(JSON.stringify(data))
+          globaldata =  data
+          $("#tags").empty()
+          for( key in globaldata.tags){
+              addtagbtn(key,globaldata.tags[key])
+          }
+          $("#notes").empty().val(globaldata.notes)
+        });
+    }
+    function updateproject(data){
+      $.ajax({
+          method: "POST",
+          url: "/api/project/#{_id}",
+          data: data
+        }).done(function(data) {
+          window.location.href = '/project/edit/#{_id}';
+        });
+    } 
+
+    function addtag(key,value){
+      $.ajax({
+          method: "POST",
+          url: "/api/project/#{_id}/addtag",
+          data: {key:key,value:value}
+        }).done(function(data) {
+          refreshdata()
+        });
+    }
+
+    function deltag(key){
+      $.ajax({
+          method: "POST",
+          url: "/api/project/#{_id}/deltag",
+          data: {key:key}
+        }).done(function(data) {
+          refreshdata()
+        });
+    }
+    function addtagbtn(key,value){
+      var dum = $('<button class="btn btn-primary btn-sm delete-tag">'+key+':'+value+'</button>')
+      dum.attr('id', key);
+      $("#tags").append(dum)
+    }
+
+    $(document).ready(function () {
+      refreshdata()
+      $("#tagsTextarea").keyup(function(e){
+          if((e.keyCode || e.which) == 13) { //Enter keycode
+              data=$(this).val();
+              var re = /(\w+)=(\w+)/;
+            if(re.test(data)){
+                  var key = data.replace(re, '$1').trim();
+                  var value = data.replace(re, '$2').trim();
+                  //globaldata.tags.set(key,value)
+                  tags.set(key,value)
+                  console.log(tags)
+                  $(this).val("");
+                  addtag(key,value)
+              }
+          }
+      });
+
+      $("#name").on("change", function(e) { 
+          updateproject({ name: $(this).val()})
+      });
+
+      $("#environnement").on("change", function(e) { 
+          updateproject({ environnement: $(this).val()})
+      });
+
+      $("#status").on("change", function(e) { 
+          updateproject({ status: $(this).val()})
+      });
+
+      $("#notes").on("change", function(e) { 
+          updateproject({ notes: $(this).val().replace(/\r\n/g, '-')})
+      });
+      $('body').on('click',".delete-tag", function(event){ 
+          key=$(this).attr("id")
+          deltag(key)
+      });
+
+      $( "#addpvcform" ).submit(function( event ) {
+          event.preventDefault();
+          var data = $(this).serializeFormJSON();
+          $.ajax({
+              method: "POST",
+              url: "/api/project/#{_id}/addpv",
+              data: data
+            }).done(function(data) {
+              window.location.href = '/project/edit/#{_id}';
+            });
+
+      });
+
+      $( ".pvcupdate" ).submit(function( event ) {
+          event.preventDefault();
+          var data = $(this).serializeFormJSON();
+          $.ajax({
+              method: "POST",
+              url: "/api/project/#{_id}/updatepvc",
+              data: data
+            }).done(function(data) {
+              window.location.href = '/project/edit/#{_id}';
+            });
+
+      });
+
+      $(".btn-pvc-remove").click(function( event ) {
+          event.preventDefault();
+          var pvcid = $(this).attr('id');;
+          $.ajax({
+              method: "POST",
+              url: "/api/project/#{_id}/removepvc",
+              data: {pvcid:pvcid}
+            }).done(function(data) {
+              window.location.href = '/project/edit/#{_id}';
+            });
+      });
+    })

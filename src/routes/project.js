@@ -52,7 +52,8 @@ router.get('/edit/:id', (req, res) => {
         res.render('project-edit', {
             title: 'Projects',
             user: req.user,
-            project: prj
+            project: prj,
+            _id: prj._id
         })
       });
 });

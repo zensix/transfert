@@ -19,7 +19,6 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var socketIORouter = require('./routes/socketio');
 var apiRouter = require('./routes/api');
-var utilsRouter = require('./routes/utils');
 var projectRouter = require('./routes/project');
 
 var mongoConnectString=process.env.MONGO_CONNECT_STRING
@@ -28,10 +27,10 @@ var mongoConnectString=process.env.MONGO_CONNECT_STRING
 MONGODB_USER = process.env.MONGODB_USER || "admproject"
 MONGODB_PASSWORD = process.env.MONGODB_PASSWORD || "admproject"
 DATABASE_SERVICE_NAME = process.env.DATABASE_SERVICE_NAME || "192.168.88.13"
-MONGODB_DATABASE = process.env.MONGODB_USER || "projectform"
+MONGODB_DATABASE = process.env.MONGODB_DATABASE || "projectform"
 mongoConnectString="mongodb://"+MONGODB_USER+":"+MONGODB_PASSWORD+"@"+DATABASE_SERVICE_NAME+":27017/"+MONGODB_DATABASE
 mongoose
-    .connect(mongoConnectString, { useNewUrlParser: true,  useUnifiedTopology: true  , useCreateIndex: true})
+    .connect(mongoConnectString, { useNewUrlParser: true,  useUnifiedTopology: true  , useCreateIndex: true, useFindAndModify:false})
     .then(console.log(`MongoDB connected ${mongoConnectString}`))
     .catch(err => console.log(err));
 

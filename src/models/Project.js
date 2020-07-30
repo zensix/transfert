@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
 // pv schema
 var pvSchema = new mongoose.Schema({
   name: { type: String},
@@ -34,17 +35,22 @@ projectSchema.methods.addpv = function(pv) {
   this.save()
 }
 
-projectSchema.methods.addtag = function(key,value) {
+projectSchema.methods.addtag = function(key,value,cb) {
   var prj = this
   prj.tags.set(key,value)
-  prj.save()
+  prj.save(  function (err) {
+    cb(prj)
+  });
 }
 
-projectSchema.methods.deltag = function(key) {
+projectSchema.methods.deltag = function(key,cb) {
   var prj = this
   prj.tags.delete(key)
-  prj.save()
+  prj.save(  function (err) {
+    cb(prj)
+  });
 }
+
 
 
 
