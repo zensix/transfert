@@ -70,8 +70,6 @@ $(document).ready(function () {
           }).done(function(data) {
             $("#editprojectdiv").toggleClass("d-none")
             $('input[name="name"]').val(data.name)
-            alert(data.name)
         })
-    })
-    
+    });
 });

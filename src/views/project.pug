@@ -56,7 +56,6 @@ block localscript
         row.append('<div class="col">Environnement')
         row.append('<div class="col">Status')
         $("#liste").append(row)
-        $("#debug").empty().append(JSON.stringify(data))
 
         data.forEach(p =>  showproject(p))
     }
@@ -113,7 +112,6 @@ block localscript
               }).done(function(data) {
                 $("#editprojectdiv").toggleClass("d-none")
                 $('input[name="name"]').val(data.name)
-                alert(data.name)
             })
         });
     });

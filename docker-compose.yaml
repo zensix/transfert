@@ -4,20 +4,22 @@ services:
 
   mongo:
     image: mongo
-    container_name: mongo-app
+    container_name: database
     environment:
-      MONGO_INITDB_DATABASE: projectform
+      MONGO_INITDB_DATABASE: prjform
       MONGO_INITDB_ROOT_USERNAME: admin  
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_USERNAME: app
       MONGO_INITDB_PASSWORD: app
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   app:
     environment:
-      DATABASE_SERVICE_NAME: mongo-app
+      DATABASE_SERVICE_NAME: database
       MONGODB_USER: app
       MONGODB_PASSWORD: app
-      MONGODB_DATABASE: projectform
+      MONGODB_DATABASE: prjform
       PORT: 8080
     container_name: front
     restart: always
@@ -25,15 +27,6 @@ services:
     ports:
       - "8080:8080"
 
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8082:8081
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-app
-      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: password
 
 
 
